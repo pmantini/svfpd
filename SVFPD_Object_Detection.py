@@ -59,7 +59,7 @@ if __name__ == "__main__":
     result_file = model + ".json"
 
     file_names = get_video_list(input_folder, args.variant)
-    
+
     if model == "yolo":
         counter = 0
         for video in file_names:
