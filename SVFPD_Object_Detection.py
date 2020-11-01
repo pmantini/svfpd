@@ -63,8 +63,8 @@ if __name__ == "__main__":
             video_sdv = SceneDatasetVideo(video)
             actual_size = video_sdv.get_frame_size()
 
-            size = (32, 32)
-            # size = (240 // 32 * 32, 320)
+            # size = (32, 32)
+            size = (240 // 32 * 32, 320)
             # size = (416, 416)
             yolo.input_size = size
 
