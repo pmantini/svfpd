@@ -51,9 +51,9 @@ if __name__ == "__main__":
     file_names = get_video_list(input_folder)
 
     if model == "yolo":
-
+        counter = 0
         for video in file_names:
-            print("Processing %s" % video)
+            print("%s/%s -- Processing %s" % (counter, len(file_names), video))
             yolo = YOLOv4()
 
             yolo.classes = "coco.names"
@@ -111,6 +111,7 @@ if __name__ == "__main__":
             with open(output_file, 'w') as f:
                 json.dump(result_detections, f)
 
+            counter += 1
             # print('Detection complete')
                 # image = np.uint8(inputs[0]*255)
                 # for k in bbs:
