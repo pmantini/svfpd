@@ -5,9 +5,16 @@ from tqdm import tqdm
 import numpy as np
 import cv2, json, os
 
-def get_video_list(folder_name):
+def get_video_list(folder_name, varaint):
     folder = FilesAccumulator(folder_name)
-    return folder.find([".avi", "mkv"], excludes=[])
+    if varaint == 'c':
+        return folder.find([".avi", 'mkv'], excludes=['variants_exceed_bw', 'variants_random'])
+    elif varaint == 'r':
+        return folder.find([".avi"], excludes=['variants_exceed_bw', 'variants'])
+    elif varaint == 'e':
+        return folder.find([".avi"], excludes=['variants_random',  'variants'])
+    else:
+        return []
 
 def get_bbs(yolo, candidates, size):
     iou_threshold = 0.3,
@@ -27,10 +34,13 @@ if __name__ == "__main__":
 
     parser.add_argument("-d", "--dir", dest="dir",
                         help="specify the name of the input directory", metavar="DIRECTORY")
+    parser.add_argument("-v", "--variant", dest="variant",
+                        help="specify the variant [c, r, e]", metavar="VARIANT")
     parser.add_argument("-o", "--output", dest="output",
                         help="specify the name of the output directory", metavar="OUTPUT")
     parser.add_argument("-m", "--model", dest="model",
                         help="specify model", metavar="MODEL")
+
 
     args = parser.parse_args()
 
@@ -48,8 +58,8 @@ if __name__ == "__main__":
 
     result_file = model + ".json"
 
-    file_names = get_video_list(input_folder)
-
+    file_names = get_video_list(input_folder, args.variant)
+    
     if model == "yolo":
         counter = 0
         for video in file_names:
