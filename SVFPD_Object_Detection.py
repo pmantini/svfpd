@@ -85,58 +85,33 @@ if __name__ == "__main__":
             yolo.load_weights("yolov4.weights", weights_type="yolo")
             ids = []
             predictions = []
-            # try:
-            for data in tqdm(dataloader_test):
-                if data == None:
-                    break
-                inputs, img_ids = data
-                inputs = np.swapaxes(np.swapaxes(inputs.numpy(), 1, 3), 1, 2)
-                prediction = yolo.predict(inputs)
+            try:
+                for data in tqdm(dataloader_test):
+                    if data == None:
+                        break
+                    inputs, img_ids = data
+                    inputs = np.swapaxes(np.swapaxes(inputs.numpy(), 1, 3), 1, 2)
+                    prediction = yolo.predict(inputs)
 
-                for bbs, id in zip(predictions, img_ids):
-                    for bb in bbs:
-                        k = bb
-                        tmp = {}
-                        tmp['image_id'] = int(id.numpy() + 1)
-                        tmp['category_id'] = int(bb[4])
-                        tl_x = k[0] - k[2] / 2 if k[0] - k[2] / 2 >= 0 else 0
-                        tl_y = k[1] - k[3] / 2 if k[1] - k[3] / 2 >= 0 else 0
+                    for bbs, id in zip(predictions, img_ids):
+                        for bb in bbs:
+                            k = bb
+                            tmp = {}
+                            tmp['image_id'] = int(id.numpy() + 1)
+                            tmp['category_id'] = int(bb[4])
+                            tl_x = k[0] - k[2] / 2 if k[0] - k[2] / 2 >= 0 else 0
+                            tl_y = k[1] - k[3] / 2 if k[1] - k[3] / 2 >= 0 else 0
 
-                        br_x = k[0] + k[2] / 2 if k[0] + k[2] / 2 <= 1 else 1
-                        br_y = k[1] + k[3] / 2 if k[1] + k[3] / 2 <= 1 else 1
-                        # tmp['bbox'] = [(int((k[0]-k[2]/2)*actual_size[0]), int((k[1]-k[3]/2)*actual_size[1])), (int((k[0]+k[2]/2)*actual_size[0]), int((k[1]+k[3]/2)*actual_size[1]))]
-                        tmp['bbox'] = [int(tl_x * actual_size[0]), int(tl_y * actual_size[1]),
-                                       int(br_x * actual_size[0]), int(br_y * actual_size[1])]
-                        tmp['score'] = bb[5]
-                        result_detections.append(tmp)
+                            br_x = k[0] + k[2] / 2 if k[0] + k[2] / 2 <= 1 else 1
+                            br_y = k[1] + k[3] / 2 if k[1] + k[3] / 2 <= 1 else 1
+                            # tmp['bbox'] = [(int((k[0]-k[2]/2)*actual_size[0]), int((k[1]-k[3]/2)*actual_size[1])), (int((k[0]+k[2]/2)*actual_size[0]), int((k[1]+k[3]/2)*actual_size[1]))]
+                            tmp['bbox'] = [int(tl_x * actual_size[0]), int(tl_y * actual_size[1]),
+                                           int(br_x * actual_size[0]), int(br_y * actual_size[1])]
+                            tmp['score'] = bb[5]
+                            result_detections.append(tmp)
 
-
-
-                # for inst, id in zip(inputs, img_ids):
-                #     bbs = yolo.predict(inst*255)
-                #
-                #     # image = np.uint8(inst*255)
-                #     # image = cv2.resize(image, actual_size)
-                #     for bb in bbs:
-                #         k = bb
-                #         tmp = {}
-                #         tmp['image_id'] = int(id.numpy() + 1)
-                #         tmp['category_id'] = int(bb[4])
-                #         tl_x = k[0]-k[2]/2 if k[0]-k[2]/2 >= 0 else 0
-                #         tl_y = k[1]-k[3]/2 if k[1]-k[3]/2 >= 0 else 0
-                #
-                #         br_x = k[0]+k[2]/2 if k[0]+k[2]/2 <= 1 else 1
-                #         br_y = k[1] + k[3]/2 if k[1]+k[3]/2 <= 1 else 1
-                #         # tmp['bbox'] = [(int((k[0]-k[2]/2)*actual_size[0]), int((k[1]-k[3]/2)*actual_size[1])), (int((k[0]+k[2]/2)*actual_size[0]), int((k[1]+k[3]/2)*actual_size[1]))]
-                #         tmp['bbox'] = [int(tl_x*actual_size[0]), int(tl_y*actual_size[1]), int(br_x*actual_size[0]), int(br_y*actual_size[1])]
-                #         tmp['score'] = bb[5]
-                #         result_detections.append(tmp)
-                            # image = cv2.rectangle(cv2.UMat(image), (tmp['bbox'][0], tmp['bbox'][1]), (tmp['bbox'][2], tmp['bbox'][3]), (255, 0, 0), 1)
-
-                        # cv2.imshow("Image", image)
-                        # cv2.waitKey(0)
-            # except:
-            #     pass
+            except:
+                pass
 
 
             results_folder = output_folder+ video_folder
@@ -151,19 +126,4 @@ if __name__ == "__main__":
                 json.dump(result_detections, f)
 
             counter += 1
-            # print('Detection complete')
-                # image = np.uint8(inputs[0]*255)
-                # for k in bbs:
-                #     print(k)
-                #     rectangle = [(int((k[0]-k[2]/2)*640), int((k[1]-k[3]/2)*480)), (int((k[0]+k[2]/2)*640), int((k[1]+k[3]/2)*480))]
-                #     print(rectangle)
-                #     image = cv2.rectangle(cv2.UMat(image), rectangle[0], rectangle[1], (255,0,0), 1)
-                # cv2.imshow("Img", image)
-                # cv2.waitKey(10)
-
-
-
-
-
-
-
+            
