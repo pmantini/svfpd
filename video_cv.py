@@ -29,7 +29,7 @@ class SceneDatasetVideo(Dataset):
 
 
     def __len__(self):
-        return int(self.video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+        return int(self.video_capture.get(cv2.CAP_PROP_FRAME_COUNT))-1
 
     def get_next_frame_number(self):
         return self.video_capture.get(cv2.CAP_PROP_POS_FRAMES)
@@ -40,13 +40,13 @@ class SceneDatasetVideo(Dataset):
     def __getitem__(self, idx):
         ret, cv_read_image = self.video_capture.read()
 
-        # cv2_im = cv2.cvtColor(cv_read_image, cv2.COLOR_BGR2RGB)
         image = Image.fromarray(cv_read_image)
 
         if self.transform:
             image = self.transform(image)
 
         return image, self.get_next_frame_number()-1
+
 
 
 def get_dataset(video_file, batch_size=16, resizeTo=None):
