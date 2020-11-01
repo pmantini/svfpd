@@ -74,8 +74,8 @@ if __name__ == "__main__":
             actual_size = video_sdv.get_frame_size()
 
             # size = (32, 32)
-            size = (240 // 32 * 32, 320)
-            # size = (416, 416)
+            # size = (240 // 32 * 32, 320)
+            size = (416, 416)
             yolo.input_size = size
 
             dataloader_test = get_dataset(video, resizeTo=size, batch_size=32)

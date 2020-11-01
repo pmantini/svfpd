@@ -15,7 +15,7 @@ class FilesAccumulator:
                         exclude_flag = False
                         full_file_name = os.path.join(root, file)
                         for exclude in excludes:
-                            
+
                             if exclude in full_file_name.split("/"):
                                 exclude_flag = True
                         if not exclude_flag:
