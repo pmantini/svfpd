@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    batch = args.batch
+    batch = int(args.batch)
     input_file = args.file
 
     output_folder = input_file.rsplit("/", 1)[0].replace("SVFPD", "SVFPD_results")
