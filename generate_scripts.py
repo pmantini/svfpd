@@ -32,7 +32,7 @@ for k in files_list:
     input = k.rsplit("SVFPD", 1)[1]
 
     input_file = "SVFPD"+input
-    ouput_file = output_folder + "yolo_%s" % count
+    ouput_file = output_folder + "yolo_%s.sh" % count
     write_file(input_file, ouput_file)
     break
     # count += 1
