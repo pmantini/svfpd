@@ -6,28 +6,6 @@ from tqdm import tqdm
 import numpy as np
 import cv2, json, os
 
-def get_video_list(folder_name, varaint):
-    folder = FilesAccumulator(folder_name)
-    if varaint == 'c':
-        return folder.find([".avi", 'mkv'], excludes=['variants_exceed_bw', 'variants_random'])
-    elif varaint == 'r':
-        return folder.find([".avi"], excludes=['variants_exceed_bw', 'variants'])
-    elif varaint == 'e':
-        return folder.find([".avi"], excludes=['variants_random',  'variants'])
-    else:
-        return []
-
-def get_bbs(yolo, candidates, size):
-    iou_threshold = 0.3,
-    score_threshold = 0.25
-    pred_bboxes = yolo.candidates_to_pred_bboxes(
-        candidates[0].numpy(),
-        iou_threshold=iou_threshold,
-        score_threshold=score_threshold,
-    )
-    pred_bboxes = yolo.fit_pred_bboxes_to_original(pred_bboxes, size)
-    return pred_bboxes
-
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
@@ -45,7 +23,7 @@ if __name__ == "__main__":
 
     input_file = args.file
 
-    output_folder = input_file.rsplit("/", 1)[0]
+    output_folder = input_file.rsplit("/", 1)[0].replace("SVFPD", "SVFPD_results")
 
     if args.output:
         output_file = args.output
@@ -65,21 +43,24 @@ if __name__ == "__main__":
     size = (416, 416)
     yolo.input_size = size
 
-    dataloader_test = get_dataset(video, resizeTo=size, batch_size=32)
+    dataloader_test = get_dataset(video, resizeTo=size, batch_size=5)
 
     yolo.make_model()
     yolo.load_weights("yolov4.weights", weights_type="yolo")
     ids = []
     predictions = []
+
     try:
         for data in tqdm(dataloader_test):
+
             if data == None:
                 break
             inputs, img_ids = data
             inputs = np.swapaxes(np.swapaxes(inputs.numpy(), 1, 3), 1, 2)
-            prediction = yolo.predict(inputs)
+            predictions = yolo.predict(inputs)
 
             for bbs, id in zip(predictions, img_ids):
+
                 for bb in bbs:
                     k = bb
                     tmp = {}
@@ -95,8 +76,10 @@ if __name__ == "__main__":
                                    int(br_x * actual_size[0]), int(br_y * actual_size[1])]
                     tmp['score'] = bb[5]
                     result_detections.append(tmp)
+            
 
     except:
+        print("Exception")
         pass
 
     try:
