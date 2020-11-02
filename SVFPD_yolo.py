@@ -16,11 +16,13 @@ if __name__ == "__main__":
                         help="specify name of the file", metavar="FILE")
     parser.add_argument("-o", "--output", dest="output",
                         help="specify name of the output", metavar="OUTPUT")
+    parser.add_argument("-b", "--batch", dest="batch", default=32,
+                        help="specify batch size", metavar="BATCH")
 
 
 
     args = parser.parse_args()
-
+    batch = args.batch
     input_file = args.file
 
     output_folder = input_file.rsplit("/", 1)[0].replace("SVFPD", "SVFPD_results")
@@ -43,7 +45,7 @@ if __name__ == "__main__":
     size = (416, 416)
     yolo.input_size = size
 
-    dataloader_test = get_dataset(video, resizeTo=size, batch_size=5)
+    dataloader_test = get_dataset(video, resizeTo=size, batch_size=batch)
 
     yolo.make_model()
     yolo.load_weights("yolov4.weights", weights_type="yolo")
@@ -76,7 +78,7 @@ if __name__ == "__main__":
                                    int(br_x * actual_size[0]), int(br_y * actual_size[1])]
                     tmp['score'] = bb[5]
                     result_detections.append(tmp)
-            
+
 
     except:
         print("Exception")
