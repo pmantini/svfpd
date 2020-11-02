@@ -126,4 +126,3 @@ if __name__ == "__main__":
                 json.dump(result_detections, f)
 
             counter += 1
-            
